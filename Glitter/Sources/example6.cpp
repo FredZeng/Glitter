@@ -33,6 +33,27 @@ int main(int argc, char * argv[]) {
     glfwMakeContextCurrent(mWindow);
     gladLoadGL();
     fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
+    
+    Shader ourShader("~/Desktop/Glitter/Glitter/Shaders/reverse.vs", "~/Desktop/Glitter/Glitter/Shaders/default.fs");
+    
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.5f, 0.0f
+    };
+    
+    unsigned int VAO;
+    glad_glGenVertexArrays(1, &VAO);
+    glad_glBindVertexArray(VAO);
+    
+    unsigned int VBO;
+    glad_glGenBuffers(1, &VBO);
+    glad_glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glad_glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
+    glad_glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glad_glEnableVertexAttribArray(0);
+    
 
     // Rendering Loop
     while (glfwWindowShouldClose(mWindow) == false) {
@@ -42,6 +63,9 @@ int main(int argc, char * argv[]) {
         // Background Fill Color
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        
+        ourShader.use();
+        glad_glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // Flip Buffers and Draw
         glfwSwapBuffers(mWindow);
